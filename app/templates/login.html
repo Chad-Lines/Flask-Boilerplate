@@ -17,4 +17,7 @@
             {{ form.remember_me.label }}</p>    <!-- Shows the label for 'Remember Me' -->
         <p>{{ form.submit() }}</p>              <!-- Shows the submit button -->
     </form>
+    <a href="{{ url_for('register') }}">        <!-- Give the user a way to register for an account if not present-->
+        Register
+    </a>
 {% endblock %}                                  <!-- Ends this block-->

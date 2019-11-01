@@ -3,9 +3,9 @@
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
-from app.forms import LoginForm
+from app.forms import LoginForm, RegistrationForm
 from app.models import User
-from app import app
+from app import app, db
 
 @app.route('/')         # Allows us to pass the index() function to the app.route function tied
 @app.route('/index')    # to the '/' and '/index' URLs, respectively
@@ -15,7 +15,6 @@ def index():
     Returning the page when a user hits the index route
     """
     return render_template('index.html', title='Home')  # Calls the template and sets the title
-
                                                 
 @app.route('/login', methods=['GET', 'POST'])   # Allows us to pass in the login() function tied to the '/login' URL
 def login():                                    # NOTE: The 'GET' and 'POST' allow us to handle the flow of data                                                                   
@@ -47,3 +46,17 @@ def logout():                           # This function is very simple.
     """ 
     logout_user()                       # Call logout_user() (a function from flask_login) to log the user out of their session
     return redirect(url_for('index'))   # Redirect the user to the index page
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:                                   # If the user is already authenticated..
+        return redirect(url_for('index'))                               # Redirect them to the index page
+    form = RegistrationForm()                                           # Defining the form to use on this page
+    if form.validate_on_submit():                                       # If the form is valid...
+        user = User(username=form.username.data, email=form.email.data) # Set the user variable to a new user (models.User)
+        user.set_password(form.password.data)                           # Set the password for the user
+        db.session.add(user)                                            # Add the user to the db session
+        db.session.commit()                                             # Save the user to the database (i.e. commit the db session)
+        flash('Registration successful')                                # Inform the user that registration was successful
+        return redirect(url_for('login'))                               # Redirect them to the login page
+    return render_template('register.html', title='Register', form=form)# If the form was not valid (or not submitted yet) render the registration page
