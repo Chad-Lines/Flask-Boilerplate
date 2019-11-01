@@ -1,0 +1,31 @@
+INITIAL CONFIGURATION
+
+$ pip3 install flask_sqlalchemy     # Install flask_sqlalchemy - allows us to work with the db
+$ pip3 install flask_migrate        # Install flask_migrate - allows us to automatically create and update the db
+$ pip3 install flask-wtf            # Install flask-wtf - allows us to create, render, and handle forms
+$ pip3 install flask-login          # Install flask_login - facilitates user login states
+$ export FLASK_APP=crm.py           # Allows us to use "flask" as a command (use 'set FLASK_APP...' in Windows)
+$ flask db init                     # Creates the migration repository
+$ flask db migrate -m "users table" # Creates the actual migration. The '-m' allows us to include a note
+$ flask db upgrade                  # Applies the changes from the migration to the database
+                                    # NOTE: You can undo the last migration with '$ flask db downgrade'
+
+CREATING TEST RECORDS
+
+>>> from app import db
+>>> from app.models import User, Customer
+
+>>> u = User(username='john', email='john@example.com')     # Creating a test user
+>>> u = User(username='susan', email='susan@example.com')   # Creating another test user
+>>> db.session.add(u)                                       # Adding the user to the session
+>>> db.session.commit()                                     # Saving the session
+
+BASIC OPERATIONS 
+
+>>> users = User.query.all()                # Storing query results
+>>> users                                   # Viewing query results ("[User: john, User: susan]")
+>>> for u in users: print(u.id, u.username) # Querying specific attributes (fields) ("1 john \n 2 susan")
+>>> u = User.query.get(1)                   # Querying by id
+>>> u                                       # "<User John>"
+>>> users = User.query.all()                # Getting all the users
+>>> for u in users: db.session.delete(u)    # Deleting all the users from the session

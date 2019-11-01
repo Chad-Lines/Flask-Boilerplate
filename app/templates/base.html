@@ -1,0 +1,37 @@
+<!-- This file is the base template that all other templates inhereit from. It helps to keep us from repeating ourselves. -->
+
+<html>
+    <head>
+      {% if title %}                                    <!-- If a title is provided... -->
+        <title>{{ title }} - CRM</title>                <!-- Then we append the title to the site name -->
+      {% else %}                                        <!-- Otherwise... -->
+        <title>Welcome to CRM</title>                   <!-- Display a generic title -->
+      {% endif %}                                       <!-- End the IF statement -->
+    </head>
+    <body>
+        <div>                                           <!-- An ugly (and temporary) navigation menu -->
+                CRM: 
+                <a href="/index">Home</a>               <!-- With these links we point to the internal URL of the page -->
+                {% if current_user.is_anonymous %}      <!-- If the user is not logged in... (current_user... is profided by flask_login.UserMixin -->
+                    <a href="/login">Login</a>          <!-- Display the login link -->
+                {% else %}                              <!-- Otherwise, if the use IS logged in... -->
+                    <a href="/logout">Logout</a>        <!-- Display the logout link -->
+                {% endif %}
+        </div>   
+        <hr>
+        {% with messages = get_flashed_messages() %}    <!-- This is used to display messages to the user as facilitated in routes.py-->
+        {% if messages %}                               <!-- If there are any messages to show... -->
+        <ul>
+            {% for message in messages %}               <!-- For each message ... -->
+                <li>{{ message }}</li>                  <!-- Display the message -->
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+        {% block content %} 
+        {% endblock %}                                  <!-- This section is reserved for use by other templates. By extending this template, 
+                                                         and placing their content in  'block content' blocks, other templates can show
+                                                         their data here.-->
+    </body>
+</html>

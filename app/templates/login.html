@@ -1,0 +1,20 @@
+{% extends "base.html" %}                       <!-- We import the code from base.html and then append this file into it -->
+
+{% block content %}                             <!-- Defining the type of block this is (i.e. 'content'). See base.html for more info -->
+    <h1>Sign In</h1>                            <!-- Displaying the page heading -->
+    <form action="" method="post" novalidate>   
+        {{ form.hidden_tag() }}                 <!-- Generates a hidden field taht includes a token to protect against CSRF attaks. NOTE: this uses -->
+                                                <!-- the SECRET_KEY variable defined in the config.py file -->
+        <p>
+            {{ form.username.label }}<br>       <!-- Shows the username label taken from the form defined in routes.py for this URL -->
+            {{ form.username(size=32) }}        <!-- Displays the actual username text field and sets the size-->
+        </p>
+        <p>
+            {{ form.password.label }}<br>       <!-- Shows the password label -->
+            {{ form.password(size=32) }}        <!-- Displays the password text field and sets the size-->
+        </p>
+        <p>{{ form.remember_me() }}             <!-- Shows the checkbox for 'Remember Me' -->
+            {{ form.remember_me.label }}</p>    <!-- Shows the label for 'Remember Me' -->
+        <p>{{ form.submit() }}</p>              <!-- Shows the submit button -->
+    </form>
+{% endblock %}                                  <!-- Ends this block-->
